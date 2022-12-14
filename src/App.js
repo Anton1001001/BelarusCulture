@@ -1,21 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
-import {Routes, Route} from "react-router-dom";
-import Home from "./pages/Home"
-import NavigationBar from "./Navigation/NavigationBar"
+import React from "react";
+import Header from "./components/Home/Header/Header";
+import Body from "./components/Home/Body/Body";
+import developersInfo from "./data/developersInfo";
+import List from "./components/List/List";
+import Writer from "./components/Writer/Writer";
+import { HashRouter, Route, Routes } from "react-router-dom";
+import writersDatabase from "./data/writersDatabase";
+import "./App.css";
 
-function App() {
-  return (
-    <Routes>
-
-      <Route path = "Pismenniki-of-belarus/" element={<NavigationBar/>}>
-        <Route index element = {<Home/>}/>
-        
-      </Route>
-    </Routes>
-  );
-  /*<Route path = "writers" element ={<WritersList/>}/>
-        <Route path="writers/:id" element = {<WritersInfo/>}/>*/
-}
+const App = () => {
+    const randomId = Math.floor(Math.random() * 5) + 1;
+    let randomPerson;
+    for (let i = 0; i < 5; i++) {
+        if (writersDatabase[i].id === randomId)
+            randomPerson = writersDatabase[i];
+    }
+    return (
+        <div className="App">
+            <div className="gradient__bg">
+                <HashRouter>
+                    <div>
+                        <Header />
+                        <div>
+                            <Routes>
+                                <Route
+                                    path="/*"
+                                    element={
+                                        <Body
+                                            mainPerson={randomPerson}
+                                            developers_info={developersInfo}
+                                        />
+                                    }
+                                />
+                                <Route
+                                    path="/list"
+                                    element={<List info={writersDatabase} />}
+                                />
+                                {writersDatabase.map((writer) => (
+                                    <Route
+                                        path={writer.url}
+                                        element={<Writer info={writer} />}
+                                    />
+                                ))}
+                            </Routes>
+                        </div>
+                    </div>
+                </HashRouter>
+            </div>
+        </div>
+    );
+};
 
 export default App;
